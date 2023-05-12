@@ -4,9 +4,6 @@ inputs:
   cache-source:
     default: cache
     description: "Where the cache is stored in the calling workspace. Default: `cache`"
-  cache-target:
-    default: /root/.cache/go-build
-    description: "Where the cache is stored in the docker container. Default: `/root/.cache/go-build`"
   scratch-dir:
     default: scratch
     description: "Where the action is stores some temporary files for its processing. Default: `scratch`"
@@ -27,9 +24,15 @@ runs:
         cat > ${{ inputs.scratch-dir }}/Dancefile.inject <<EOF
         FROM busybox:1
         COPY buildstamp buildstamp
-        RUN --mount=type=cache,target=${{ inputs.cache-target }} \
+        RUN --mount=type=cache,target=/usr/local/cargo/registry/index \
+            --mount=type=cache,target=/usr/local/cargo/registry/cache \
+            --mount=type=cache,target=/usr/local/cargo/git/db \
+            --mount=type=cache,target=/platform/target \
             --mount=type=bind,source=.,target=/var/dance-cache \
-            cp -R /var/dance-cache/. ${{ inputs.cache-target }} || true
+            cp -R /var/dance-cache/registry/index /usr/local/cargo/registry/index || true && \
+            cp -R /var/dance-cache/registry/cache /usr/local/cargo/registry/cache || true && \
+            cp -R /var/dance-cache/git/db /usr/local/cargo/git/db || true && \
+            cp -R /var/dance-cache/target /platform/target || true
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
     - name: Inject Data into Docker Cache
