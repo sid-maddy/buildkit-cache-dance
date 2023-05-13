@@ -29,13 +29,22 @@ runs:
             --mount=type=cache,target=/usr/local/cargo/git/db \
             --mount=type=cache,target=/platform/target \
             --mount=type=bind,source=.,target=/var/dance-cache \
+            ls -lha /var/dance-cache && \
+            ls -lha /usr/local/cargo/registry/index && \
+            ls -lha /usr/local/cargo/registry/cache && \
+            ls -lha /usr/local/cargo/git/db && \
+            ls -lha /platform/target && \
             cp -R /var/dance-cache/registry/index /usr/local/cargo/registry/index || true && \
             cp -R /var/dance-cache/registry/cache /usr/local/cargo/registry/cache || true && \
             cp -R /var/dance-cache/git/db /usr/local/cargo/git/db || true && \
-            cp -R /var/dance-cache/target /platform/target || true
+            cp -R /var/dance-cache/target /platform/target || true && \
+            ls -lha /usr/local/cargo/registry/index && \
+            ls -lha /usr/local/cargo/registry/cache && \
+            ls -lha /usr/local/cargo/git/db && \
+            ls -lha /platform/target
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
-    - name: Inject Data into Docker Cache
+    - name: Inject Data into buildx context
       shell: bash
       run: |
         docker buildx build -f ${{ inputs.scratch-dir }}/Dancefile.inject --tag dance:inject ${{ inputs.cache-source }}
