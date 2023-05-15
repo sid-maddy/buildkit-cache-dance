@@ -24,11 +24,10 @@ runs:
             --mount=type=cache,target=/usr/local/cargo/registry/cache \
             --mount=type=cache,target=/usr/local/cargo/git/db \
             --mount=type=cache,target=/platform/target \
-            mkdir -p /var/dance-cache/ && \
-            mkdir -p /usr/local/cargo/registry/index && \
-            mkdir -p /usr/local/cargo/registry/cache && \
-            mkdir -p /usr/local/cargo/git/db && \
-            mkdir -p /platform/target && \
+            mkdir -p /var/dance-cache/registry/index && \
+            mkdir -p /var/dance-cache/registry/cache && \
+            mkdir -p /var/dance-cache/git/db && \
+            mkdir -p /var/dance-cache/target && \
             ls -lha /usr/local/cargo/registry/index && \
             ls -lha /usr/local/cargo/registry/cache && \
             ls -lha /usr/local/cargo/git/db && \
