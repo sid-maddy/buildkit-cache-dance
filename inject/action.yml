@@ -34,10 +34,10 @@ runs:
             ls -lha /usr/local/cargo/registry/cache && \
             ls -lha /usr/local/cargo/git/db && \
             ls -lha /platform/target && \
-            cp -R /var/dance-cache/registry/index /usr/local/cargo/registry/index || true && \
-            cp -R /var/dance-cache/registry/cache /usr/local/cargo/registry/cache || true && \
-            cp -R /var/dance-cache/git/db /usr/local/cargo/git/db || true && \
-            cp -R /var/dance-cache/target /platform/target || true && \
+            cp -R /var/dance-cache/registry/index/* /usr/local/cargo/registry/index || true && \
+            cp -R /var/dance-cache/registry/cache/* /usr/local/cargo/registry/cache || true && \
+            cp -R /var/dance-cache/git/db /usr/local/cargo/git/db/* || true && \
+            cp -R /var/dance-cache/target /platform/target/* || true && \
             ls -lha /usr/local/cargo/registry/index && \
             ls -lha /usr/local/cargo/registry/cache && \
             ls -lha /usr/local/cargo/git/db && \
