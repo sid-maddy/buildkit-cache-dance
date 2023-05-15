@@ -30,6 +30,8 @@ runs:
             --mount=type=cache,target=/platform/target \
             --mount=type=bind,source=.,target=/var/dance-cache \
             mkdir -p /usr/local/cargo/git/db && \
+            cat /etc/passwd && \
+            whoami && \
             ls -lha /var/dance-cache && \
             ls -lha /usr/local/cargo/registry/index && \
             ls -lha /usr/local/cargo/registry/cache && \
@@ -42,7 +44,10 @@ runs:
             ls -lha /usr/local/cargo/registry/index && \
             ls -lha /usr/local/cargo/registry/cache && \
             ls -lha /usr/local/cargo/git/db && \
-            ls -lha /platform/target
+            ls -lha /platform/target && \
+            ls -lha /usr/local/cargo/ && \
+            chown 1000:1000 -R /usr/local/cargo && \
+            chown 1000:1000 -R /platform/target
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
     - name: Inject Data into buildx context
