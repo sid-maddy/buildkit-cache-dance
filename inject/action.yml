@@ -37,7 +37,8 @@ runs:
             ls -lha /usr/local/cargo/registry/cache && \
             ls -lha /usr/local/cargo/git/db && \
             ls -lha /platform/target && \
-            tree /usr/local/cargo && \
+            echo "timestamps before build, after copy from s3, before copy from cachedir"
+            find /var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -printf '%p %C@\n' && \
             cp -R /var/dance-cache/registry/index/. /usr/local/cargo/registry/index || true && \
             cp -R /var/dance-cache/registry/cache/. /usr/local/cargo/registry/cache || true && \
             cp -R /var/dance-cache/git/db/. /usr/local/cargo/git/db || true && \
@@ -47,6 +48,8 @@ runs:
             ls -lha /usr/local/cargo/git/db && \
             chmod 777 -R /usr/local/cargo && \
             chmod 777 -R /platform/target && \
+            echo "timestamps before build, after copy from cachedir"
+            find /usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -printf '%p %C@\n' && \
             ls -lha /platform/target && \
             ls -lha /usr/local/cargo/
 
