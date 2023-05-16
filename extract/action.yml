@@ -20,10 +20,10 @@ runs:
         cat > ${{ inputs.scratch-dir }}/Dancefile.extract <<EOF
         FROM busybox:1
         COPY buildstamp buildstamp
-        RUN --mount=type=cache,target=/usr/local/cargo/registry/index \
-            --mount=type=cache,target=/usr/local/cargo/registry/cache \
-            --mount=type=cache,target=/usr/local/cargo/git/db \
-            --mount=type=cache,target=/platform/target \
+        RUN --mount=type=cache,id=deps_cargo_index,target=/usr/local/cargo/registry/index \
+            --mount=type=cache,id=deps_cargo_cache,target=/usr/local/cargo/registry/cache \
+            --mount=type=cache,id=deps_cargo_git,target=/usr/local/cargo/git/db \
+            --mount=type=cache,id=deps_target,target=/platform/target \
             mkdir -p /var/dance-cache/registry/index && \
             mkdir -p /var/dance-cache/registry/cache && \
             mkdir -p /var/dance-cache/git/db && \
