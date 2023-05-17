@@ -39,10 +39,10 @@ runs:
             ls -lha /platform/target && \
             echo "timestamps before build, after copy from s3, before copy from cachedir" && \
             find /var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + && \
-            cp -R /var/dance-cache/registry/index/. /usr/local/cargo/registry/index || true && \
-            cp -R /var/dance-cache/registry/cache/. /usr/local/cargo/registry/cache || true && \
-            cp -R /var/dance-cache/git/db/. /usr/local/cargo/git/db || true && \
-            cp -R /var/dance-cache/target/. /platform/target || true && \
+            cp -a /var/dance-cache/registry/index/. /usr/local/cargo/registry/index || true && \
+            cp -a /var/dance-cache/registry/cache/. /usr/local/cargo/registry/cache || true && \
+            cp -a /var/dance-cache/git/db/. /usr/local/cargo/git/db || true && \
+            cp -a /var/dance-cache/target/. /platform/target || true && \
             ls -lha /usr/local/cargo/registry/index && \
             ls -lha /usr/local/cargo/registry/cache && \
             ls -lha /usr/local/cargo/git/db && \
