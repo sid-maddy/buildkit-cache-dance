@@ -58,5 +58,7 @@ runs:
       run: |
         sudo rm -rf ${{ inputs.cache-source }}
         mv ${{ inputs.scratch-dir }}/dance-cache ${{ inputs.cache-source }}
+        pwd
+        ls
         echo "timestamps after build, after copy out from built cache image with tar"
-        find ${{ inputs.cache-source }}/registry/src/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} +
+        find ./${{ inputs.cache-source }}/registry/src/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} +
