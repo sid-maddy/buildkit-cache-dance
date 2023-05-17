@@ -33,7 +33,7 @@ runs:
             ls -lha /usr/local/cargo/git/db && \
             ls -lha /platform/target && \
             echo "timestamps after build, before copy from cachedir" && \
-            find /usr/local/cargo/registry/src/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + && \
+            find /usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + && \
             cp -R /usr/local/cargo/registry/index/. /var/dance-cache/registry/index || true && \
             cp -R /usr/local/cargo/registry/cache/. /var/dance-cache/registry/cache || true && \
             cp -R /usr/local/cargo/git/db/. /var/dance-cache/git/db || true && \
