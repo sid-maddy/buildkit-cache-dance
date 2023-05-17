@@ -38,7 +38,8 @@ runs:
             cp -R /usr/local/cargo/registry/cache/. /var/dance-cache/registry/cache || true && \
             cp -R /usr/local/cargo/git/db/. /var/dance-cache/git/db || true && \
             cp -R /platform/target/. /var/dance-cache/target || true && \
-            echo "timestamps after build, after copy from cachedir"
+            echo "timestamps after build, after copy from cachedir" && \
+            find /var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} +
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
     - name: Extract Data into buildx context
