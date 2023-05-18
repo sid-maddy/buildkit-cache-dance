@@ -58,9 +58,14 @@ runs:
             cp -a /var/dance-cache/drive/registry/cache/. /drive/usr/local/cargo/registry/cache || true && \
             cp -a /var/dance-cache/drive/git/db/. /drive/usr/local/cargo/git/db || true && \
             cp -a /var/dance-cache/drive/target/. /drive/platform/target || true && \
-            ls -lha /usr/local/cargo/registry/index && \
-            ls -lha /usr/local/cargo/registry/cache && \
-            ls -lha /usr/local/cargo/git/db && \
+            ls -lha /deps/usr/local/cargo/registry/index && \
+            ls -lha /deps/usr/local/cargo/registry/cache && \
+            ls -lha /deps/usr/local/cargo/git/db && \
+            ls -lha /deps/platform/target && \
+            ls -lha /drive/usr/local/cargo/registry/index && \
+            ls -lha /drive/usr/local/cargo/registry/cache && \
+            ls -lha /drive/usr/local/cargo/git/db && \
+            ls -lha /drive/platform/target && \
             chmod 777 -R /deps && \
             chmod 777 -R /drive && \
             echo "deps timestamps before build, after copy from cachedir" && \
