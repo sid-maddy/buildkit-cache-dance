@@ -47,9 +47,9 @@ runs:
             ls -lha /drive/usr/local/cargo/git/db && \
             ls -lha /drive/platform/target && \
             echo "deps timestamps before build, after copy from s3, before copy from cachedir" && \
-            find /deps/var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + && \
+            find /deps/var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
             echo "drive timestamps before build, after copy from s3, before copy from cachedir" && \
-            find /drive/var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + && \
+            find /drive/var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
             cp -a /var/dance-cache/deps/registry/index/. /deps/usr/local/cargo/registry/index || true && \
             cp -a /var/dance-cache/deps/registry/cache/. /deps/usr/local/cargo/registry/cache || true && \
             cp -a /var/dance-cache/deps/git/db/. /deps/usr/local/cargo/git/db || true && \
@@ -69,9 +69,9 @@ runs:
             chmod 777 -R /deps && \
             chmod 777 -R /drive && \
             echo "deps timestamps before build, after copy from cachedir" && \
-            find /deps/usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + && \
+            find /deps/usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
             echo "drive timestamps before build, after copy from cachedir" && \
-            find /drive/usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + && \
+            find /drive/usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
             ls -lha /deps/platform/target && \
             ls -lha /deps/usr/local/cargo/ && \
             ls -lha /drive/platform/target && \
