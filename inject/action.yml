@@ -28,16 +28,13 @@ runs:
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
             --mount=type=cache,sharing=shared,id=target,target=/platform/target \
             --mount=type=bind,source=.,target=/var/dance-cache \
-            tree /usr/local/cargo && \
-            tree /platform && \
+            echo "cache size:" && du -hd1 /var/dance-cache && \
             cp -a /var/dance-cache/registry/. /usr/local/cargo/registry || true && \
             cp -a /var/dance-cache/git/. /usr/local/cargo/git || true && \
             cp -a /var/dance-cache/target/. /platform/target || true && \
             chmod 777 -R /usr/local/cargo/registry || true && \
             chmod 777 -R /usr/local/cargo/git || true && \
-            chmod 777 -R /platform/target || true && \
-            tree /usr/local/cargo/ && \
-            tree /platform
+            chmod 777 -R /platform/target || true
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
     - name: Inject Data into buildx context
