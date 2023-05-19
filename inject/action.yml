@@ -28,10 +28,10 @@ runs:
             --mount=type=cache,sharing=shared,id=deps_cargo_cache,target=/deps/usr/local/cargo/registry/cache \
             --mount=type=cache,sharing=shared,id=deps_cargo_git,target=/deps/usr/local/cargo/git/db \
             --mount=type=cache,sharing=shared,id=deps_target,target=/deps/platform/target \
-            --mount=type=cache,sharing=shared,id=drive_cargo_index,target=/drive/usr/local/cargo/registry/index \
-            --mount=type=cache,sharing=shared,id=drive_cargo_cache,target=/drive/usr/local/cargo/registry/cache \
-            --mount=type=cache,sharing=shared,id=drive_cargo_git,target=/drive/usr/local/cargo/git/db \
-            --mount=type=cache,sharing=shared,id=drive_target,target=/drive/platform/target \
+            --mount=type=cache,sharing=locked,id=drive_cargo_index,target=/drive/usr/local/cargo/registry/index \
+            --mount=type=cache,sharing=locked,id=drive_cargo_cache,target=/drive/usr/local/cargo/registry/cache \
+            --mount=type=cache,sharing=locked,id=drive_cargo_git,target=/drive/usr/local/cargo/git/db \
+            --mount=type=cache,sharing=locked,id=drive_target,target=/drive/platform/target \
             --mount=type=bind,source=.,target=/var/dance-cache \
             mkdir -p /deps/usr/local/cargo/git/db && \
             mkdir -p /drive/usr/local/cargo/git/db && \
