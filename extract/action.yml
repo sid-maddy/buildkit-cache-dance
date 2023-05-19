@@ -20,46 +20,16 @@ runs:
         cat > ${{ inputs.scratch-dir }}/Dancefile.extract <<EOF
         FROM busybox:1
         COPY buildstamp buildstamp
-        RUN --mount=type=cache,sharing=shared,id=deps_cargo_index,target=/deps/usr/local/cargo/registry/index \
-            --mount=type=cache,sharing=shared,id=deps_cargo_cache,target=/deps/usr/local/cargo/registry/cache \
-            --mount=type=cache,sharing=shared,id=deps_cargo_git,target=/deps/usr/local/cargo/git/db \
-            --mount=type=cache,sharing=shared,id=deps_target,target=/deps/platform/target \
-            --mount=type=cache,sharing=locked,id=drive_cargo_index,target=/drive/usr/local/cargo/registry/index \
-            --mount=type=cache,sharing=locked,id=drive_cargo_cache,target=/drive/usr/local/cargo/registry/cache \
-            --mount=type=cache,sharing=locked,id=drive_cargo_git,target=/drive/usr/local/cargo/git/db \
-            --mount=type=cache,sharing=locked,id=drive_target,target=/drive/platform/target \
-            mkdir -p /var/dance-cache/deps/registry/index && \
-            mkdir -p /var/dance-cache/deps/registry/cache && \
-            mkdir -p /var/dance-cache/deps/git/db && \
-            mkdir -p /var/dance-cache/deps/target && \
-            mkdir -p /var/dance-cache/drive/registry/index && \
-            mkdir -p /var/dance-cache/drive/registry/cache && \
-            mkdir -p /var/dance-cache/drive/git/db && \
-            mkdir -p /var/dance-cache/drive/target && \
-            ls -lha /deps/usr/local/cargo/registry/index && \
-            ls -lha /deps/usr/local/cargo/registry/cache && \
-            ls -lha /deps/usr/local/cargo/git/db && \
-            ls -lha /deps/platform/target && \
-            ls -lha /drive/usr/local/cargo/registry/index && \
-            ls -lha /drive/usr/local/cargo/registry/cache && \
-            ls -lha /drive/usr/local/cargo/git/db && \
-            ls -lha /drive/platform/target && \
-            echo "deps timestamps after build, before copy from cachedir" && \
-            find /deps/usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
-            echo "drive timestamps after build, before copy from cachedir" && \
-            find /drive/usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
-            cp -a /deps/usr/local/cargo/registry/index/. /var/dance-cache/deps/registry/index || true && \
-            cp -a /deps/usr/local/cargo/registry/cache/. /var/dance-cache/deps/registry/cache || true && \
-            cp -a /deps/usr/local/cargo/git/db/. /var/dance-cache/deps/git/db || true && \
-            cp -a /deps/platform/target/. /var/dance-cache/deps/target || true && \
-            cp -a /drive/usr/local/cargo/registry/index/. /var/dance-cache/drive/registry/index || true && \
-            cp -a /drive/usr/local/cargo/registry/cache/. /var/dance-cache/drive/registry/cache || true && \
-            cp -a /drive/usr/local/cargo/git/db/. /var/dance-cache/drive/git/db || true && \
-            cp -a /drive/platform/target/. /var/dance-cache/drive/target || true && \
-            echo "deps timestamps after build, after copy from cachedir" && \
-            find /var/dance-cache/deps/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
-            echo "drive timestamps after build, after copy from cachedir" && \
-            find /var/dance-cache/drive/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true 
+        RUN --mount=type=cache,sharing=shared,id=cargo_registry,target=/usr/local/cargo/registry \
+            --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
+            --mount=type=cache,sharing=shared,id=target,target=/platform/target \
+            mkdir -p /var/dance-cache/{registry,git,target} && \
+            cp -a /usr/local/cargo/registry/. /var/dance-cache/registry || true && \
+            cp -a /usr/local/cargo/git/. /var/dance-cache/git || true && \
+            cp -a /platform/target/. /var/dance-cache/target || true && \
+            tree /var/dance-cache/registry && \
+            tree /var/dance-cache/git && \
+            tree /var/dance-cache/target
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
     - name: Extract Data into buildx context

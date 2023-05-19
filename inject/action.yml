@@ -24,59 +24,17 @@ runs:
         cat > ${{ inputs.scratch-dir }}/Dancefile.inject <<EOF
         FROM busybox:1
         COPY buildstamp buildstamp
-        RUN --mount=type=cache,sharing=shared,id=deps_cargo_index,target=/deps/usr/local/cargo/registry/index \
-            --mount=type=cache,sharing=shared,id=deps_cargo_cache,target=/deps/usr/local/cargo/registry/cache \
-            --mount=type=cache,sharing=shared,id=deps_cargo_git,target=/deps/usr/local/cargo/git/db \
-            --mount=type=cache,sharing=shared,id=deps_target,target=/deps/platform/target \
-            --mount=type=cache,sharing=locked,id=drive_cargo_index,target=/drive/usr/local/cargo/registry/index \
-            --mount=type=cache,sharing=locked,id=drive_cargo_cache,target=/drive/usr/local/cargo/registry/cache \
-            --mount=type=cache,sharing=locked,id=drive_cargo_git,target=/drive/usr/local/cargo/git/db \
-            --mount=type=cache,sharing=locked,id=drive_target,target=/drive/platform/target \
+        RUN --mount=type=cache,sharing=shared,id=cargo_registry,target=/usr/local/cargo/registry \
+            --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
+            --mount=type=cache,sharing=shared,id=target,target=/platform/target \
             --mount=type=bind,source=.,target=/var/dance-cache \
-            mkdir -p /deps/usr/local/cargo/git/db && \
-            mkdir -p /drive/usr/local/cargo/git/db && \
-            cat /etc/passwd && \
-            whoami && \
-            ls -lha /var/dance-cache && \
-            ls -lha /deps/usr/local/cargo/registry/index && \
-            ls -lha /deps/usr/local/cargo/registry/cache && \
-            ls -lha /deps/usr/local/cargo/git/db && \
-            ls -lha /deps/platform/target && \
-            ls -lha /drive/usr/local/cargo/registry/index && \
-            ls -lha /drive/usr/local/cargo/registry/cache && \
-            ls -lha /drive/usr/local/cargo/git/db && \
-            ls -lha /drive/platform/target && \
-            echo "deps timestamps before build, after copy from s3, before copy from cachedir" && \
-            find /deps/var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
-            echo "drive timestamps before build, after copy from s3, before copy from cachedir" && \
-            find /drive/var/dance-cache/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
-            cp -a /var/dance-cache/deps/registry/index/. /deps/usr/local/cargo/registry/index || true && \
-            cp -a /var/dance-cache/deps/registry/cache/. /deps/usr/local/cargo/registry/cache || true && \
-            cp -a /var/dance-cache/deps/git/db/. /deps/usr/local/cargo/git/db || true && \
-            cp -a /var/dance-cache/deps/target/. /deps/platform/target || true && \
-            cp -a /var/dance-cache/drive/registry/index/. /drive/usr/local/cargo/registry/index || true && \
-            cp -a /var/dance-cache/drive/registry/cache/. /drive/usr/local/cargo/registry/cache || true && \
-            cp -a /var/dance-cache/drive/git/db/. /drive/usr/local/cargo/git/db || true && \
-            cp -a /var/dance-cache/drive/target/. /drive/platform/target || true && \
-            ls -lha /deps/usr/local/cargo/registry/index && \
-            ls -lha /deps/usr/local/cargo/registry/cache && \
-            ls -lha /deps/usr/local/cargo/git/db && \
-            ls -lha /deps/platform/target && \
-            ls -lha /drive/usr/local/cargo/registry/index && \
-            ls -lha /drive/usr/local/cargo/registry/cache && \
-            ls -lha /drive/usr/local/cargo/git/db && \
-            ls -lha /drive/platform/target && \
-            chmod 777 -R /deps && \
-            chmod 777 -R /drive && \
-            echo "deps timestamps before build, after copy from cachedir" && \
-            find /deps/usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
-            echo "drive timestamps before build, after copy from cachedir" && \
-            find /drive/usr/local/cargo/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + || true && \
-            ls -lha /deps/platform/target && \
-            ls -lha /deps/usr/local/cargo/ && \
-            ls -lha /drive/platform/target && \
-            ls -lha /drive/usr/local/cargo/
-
+            tree /usr/local/cargo && \
+            tree /platform && \
+            cp -a /var/dance-cache/registry/. /usr/local/cargo/registry || true && \
+            cp -a /var/dance-cache/git/. /usr/local/cargo/git || true && \
+            cp -a /var/dance-cache/target/. /platform/target || true && \
+            tree /usr/local/cargo/ && \
+            tree /platform
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
     - name: Inject Data into buildx context
