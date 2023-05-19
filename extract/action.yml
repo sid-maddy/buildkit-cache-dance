@@ -57,7 +57,7 @@ runs:
             cp -a /drive/usr/local/cargo/git/db/. /var/dance-cache/drive/git/db || true && \
             cp -a /drive/platform/target/. /var/dance-cache/drive/target || true && \
             echo "deps timestamps after build, after copy from cachedir" && \
-            find /var/dance-cache/deps/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} +
+            find /var/dance-cache/deps/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} + && \
             echo "drive timestamps after build, after copy from cachedir" && \
             find /var/dance-cache/drive/registry/cache/github.com-1ecc6299db9ec823/ -exec stat -c '%n %Y' {} +
         EOF
