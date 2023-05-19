@@ -29,7 +29,8 @@ runs:
             cp -a /platform/target/. /var/dance-cache/target || true && \
             tree /var/dance-cache/registry && \
             tree /var/dance-cache/git && \
-            tree /var/dance-cache/target
+            tree /var/dance-cache/target && \
+            du -hd1 /var/dance-cache
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
     - name: Extract Data into buildx context
