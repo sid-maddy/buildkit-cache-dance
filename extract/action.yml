@@ -18,7 +18,7 @@ runs:
       shell: bash
       run: |
         cat > ${{ inputs.scratch-dir }}/Dancefile.extract <<EOF
-        FROM busybox:1
+        FROM peakcom/s5cmd:v2.0.0
         COPY buildstamp buildstamp
         RUN --mount=type=cache,sharing=shared,id=cargo_registry,target=/usr/local/cargo/registry \
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
