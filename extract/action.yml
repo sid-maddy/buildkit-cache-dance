@@ -27,6 +27,10 @@ runs:
             mkdir -p /var/dance-cache/registry && \
             mkdir -p /var/dance-cache/git && \
             mkdir -p /var/dance-cache/target && \
+            echo "s5cmd:" && /s5cmd version && \
+            echo "=============" && \
+            /s5cmd ls 's3://platform-runner-cache/cache-mounts' && \
+            echo "=============" && \
             cp -a /usr/local/cargo/registry/. /var/dance-cache/registry || true && \
             cp -a /usr/local/cargo/git/. /var/dance-cache/git || true && \
             cp -a /platform/target/. /var/dance-cache/target || true && \

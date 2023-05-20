@@ -31,7 +31,9 @@ runs:
             --mount=type=cache,sharing=shared,id=drive_target,target=/platform/target/drive \
             --mount=type=bind,source=.,target=/var/dance-cache \
             echo "s5cmd:" && /s5cmd version && \
+            echo "=============" && \
             /s5cmd ls 's3://platform-runner-cache/cache-mounts' && \
+            echo "=============" && \
             echo "cache size:" && du -hd2 /var/dance-cache && \
             cp -a /var/dance-cache/registry/. /usr/local/cargo/registry || true && \
             cp -a /var/dance-cache/git/. /usr/local/cargo/git || true && \
