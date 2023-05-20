@@ -24,7 +24,9 @@ runs:
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
             --mount=type=cache,sharing=shared,id=deps_target,target=/platform/target/deps \
             --mount=type=cache,sharing=shared,id=drive_target,target=/platform/target/drive \
-            mkdir -p /var/dance-cache/{registry,git,target} && \
+            mkdir -p /var/dance-cache/registry && \
+            mkdir -p /var/dance-cache/git && \
+            mkdir -p /var/dance-cache/target && \
             cp -a /usr/local/cargo/registry/. /var/dance-cache/registry || true && \
             cp -a /usr/local/cargo/git/. /var/dance-cache/git || true && \
             cp -a /platform/target/. /var/dance-cache/target || true && \
