@@ -29,7 +29,7 @@ runs:
             --mount=type=cache,sharing=shared,id=deps_target,target=/platform/target/deps \
             --mount=type=cache,sharing=shared,id=drive_target,target=/platform/target/drive \
             --mount=type=bind,source=.,target=/var/dance-cache \
-            echo "cache size:" && du -hd1 /var/dance-cache && \
+            echo "cache size:" && du -hd2 /var/dance-cache && \
             cp -a /var/dance-cache/registry/. /usr/local/cargo/registry || true && \
             cp -a /var/dance-cache/git/. /usr/local/cargo/git || true && \
             cp -a /var/dance-cache/target/. /platform/target || true && \

@@ -30,7 +30,7 @@ runs:
             cp -a /usr/local/cargo/registry/. /var/dance-cache/registry || true && \
             cp -a /usr/local/cargo/git/. /var/dance-cache/git || true && \
             cp -a /platform/target/. /var/dance-cache/target || true && \
-            echo "cache size:" && du -hd1 /var/dance-cache
+            echo "cache size:" && du -hd2 /var/dance-cache
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
     - name: Extract Data into buildx context
