@@ -23,7 +23,7 @@ runs:
       run: |
         cat > ${{ inputs.scratch-dir }}/Dancefile.inject <<EOF
         FROM peakcom/s5cmd:v2.0.0
-        ENTRYPOINT []
+        RUN apk add tree
         COPY buildstamp buildstamp
         RUN --mount=type=cache,sharing=shared,id=cargo_registry,target=/usr/local/cargo/registry \
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
