@@ -29,9 +29,9 @@ runs:
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
             --mount=type=cache,sharing=shared,id=deps_target,target=/platform/target/deps \
             --mount=type=cache,sharing=shared,id=drive_target,target=/platform/target/drive \
-            /s5cmd sync 's3://platform-runner-cache/cache-mounts/registry/*' /usr/local/cargo/registry > /dev/null & \
-            /s5cmd sync 's3://platform-runner-cache/cache-mounts/git/*' /usr/local/cargo/git & \
-            /s5cmd sync 's3://platform-runner-cache/cache-mounts/target/*' /platform/target & \
+            /s5cmd sync 's3://platform-runner-cache/cache-mounts/registry/*' '/usr/local/cargo/registry' > /dev/null & \
+            /s5cmd sync 's3://platform-runner-cache/cache-mounts/git/*' '/usr/local/cargo/git' & \
+            /s5cmd sync 's3://platform-runner-cache/cache-mounts/target/*' '/platform/target' & \
             wait && \
             chmod 777 -R /usr/local/cargo/registry || true && \
             chmod 777 -R /usr/local/cargo/git || true && \
