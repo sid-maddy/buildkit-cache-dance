@@ -24,35 +24,27 @@ runs:
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
             --mount=type=cache,sharing=shared,id=deps_target,target=/platform/target/deps \
             --mount=type=cache,sharing=shared,id=drive_target,target=/platform/target/drive \
-            mkdir -p /var/dance-cache/registry && \
-            mkdir -p /var/dance-cache/git && \
-            mkdir -p /var/dance-cache/target && \
-            echo "s5cmd:" && /s5cmd version && \
-            echo "=============" && \
-            /s5cmd ls 's3://platform-runner-cache/cache-mounts' && \
-            echo "=============" && \
-            cp -a /usr/local/cargo/registry/. /var/dance-cache/registry || true && \
-            cp -a /usr/local/cargo/git/. /var/dance-cache/git || true && \
-            cp -a /platform/target/. /var/dance-cache/target || true && \
-            echo "cache size:" && du -hd2 /var/dance-cache
+            /s5cmd sync /usr/local/cargo/registry s3://platform-runner-cache/cache-mounts/registry/*
+            /s5cmd sync /usr/local/cargo/git s3://platform-runner-cache/cache-mounts/git/*
+            /s5cmd sync /platform/target s3://platform-runner-cache/cache-mounts/target/*
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
     - name: Extract Data into buildx context
       shell: bash
       run: |
-        docker buildx build -f ${{ inputs.scratch-dir }}/Dancefile.extract --tag dance:extract --load ${{ inputs.scratch-dir }}
-    - name: Create Extraction Image
-      shell: bash
-      run: |
-        docker rm -f cache-container && docker create -ti --name cache-container dance:extract
-    - name: Unpack Docker Image into Scratch
-      shell: bash
-      run: |
-        docker cp -L cache-container:/var/dance-cache - | tar -x -C ${{ inputs.scratch-dir }}
-    - name: Move Cache into Its Place
-      shell: bash
-      run: |
-        sudo rm -rf ${{ inputs.cache-source }}
-        mv ${{ inputs.scratch-dir }}/dance-cache ${{ inputs.cache-source }}
-        pwd
-        ls
+        docker buildx build -f ${{ inputs.scratch-dir }}/Dancefile.extract ${{ inputs.scratch-dir }}
+    # - name: Create Extraction Image
+    #   shell: bash
+    #   run: |
+    #     docker rm -f cache-container && docker create -ti --name cache-container dance:extract
+    # - name: Unpack Docker Image into Scratch
+    #   shell: bash
+    #   run: |
+    #     docker cp -L cache-container:/var/dance-cache - | tar -x -C ${{ inputs.scratch-dir }}
+    # - name: Move Cache into Its Place
+    #   shell: bash
+    #   run: |
+    #     sudo rm -rf ${{ inputs.cache-source }}
+    #     mv ${{ inputs.scratch-dir }}/dance-cache ${{ inputs.cache-source }}
+    #     pwd
+    #     ls

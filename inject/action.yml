@@ -29,15 +29,9 @@ runs:
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git \
             --mount=type=cache,sharing=shared,id=deps_target,target=/platform/target/deps \
             --mount=type=cache,sharing=shared,id=drive_target,target=/platform/target/drive \
-            --mount=type=bind,source=.,target=/var/dance-cache \
-            echo "s5cmd:" && /s5cmd version && \
-            echo "=============" && \
-            /s5cmd ls 's3://platform-runner-cache/cache-mounts' && \
-            echo "=============" && \
-            echo "cache size:" && du -hd2 /var/dance-cache && \
-            cp -a /var/dance-cache/registry/. /usr/local/cargo/registry || true && \
-            cp -a /var/dance-cache/git/. /usr/local/cargo/git || true && \
-            cp -a /var/dance-cache/target/. /platform/target || true && \
+            /s5cmd sync s3://platform-runner-cache/cache-mounts/registry/* /usr/local/cargo/registry
+            /s5cmd sync s3://platform-runner-cache/cache-mounts/git/* /usr/local/cargo/git
+            /s5cmd sync s3://platform-runner-cache/cache-mounts/target/* /platform/target
             chmod 777 -R /usr/local/cargo/registry || true && \
             chmod 777 -R /usr/local/cargo/git || true && \
             chmod 777 -R /platform/target || true
@@ -46,7 +40,7 @@ runs:
     - name: Inject Data into buildx context
       shell: bash
       run: |
-        docker buildx build -f ${{ inputs.scratch-dir }}/Dancefile.inject --tag dance:inject ${{ inputs.cache-source }}
+        docker buildx build -f ${{ inputs.scratch-dir }}/Dancefile.inject ${{ inputs.cache-source }}
     - name: Clean Directories
       shell: bash
       run: |
