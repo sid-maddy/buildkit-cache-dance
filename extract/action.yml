@@ -27,10 +27,9 @@ runs:
             --mount=type=cache,sharing=locked,id=drive_target,target=/platform/target/drive \
             tree -L 3 /usr/local/cargo && \
             tree -L 4 /platform/target && \
-            /s5cmd sync --exclude "src/*" '/usr/local/cargo/registry/*' 's3://platform-runner-cache/cache-mounts/registry/' && \
-            /s5cmd sync --exclude "checkouts/*" '/usr/local/cargo/git/*' 's3://platform-runner-cache/cache-mounts/git/' && \
-            /s5cmd sync '/platform/target/*' 's3://platform-runner-cache/cache-mounts/target/' && \
-            wait
+            /s5cmd --exclude "src/*" sync "/usr/local/cargo/registry/*" "s3://platform-runner-cache/cache-mounts/registry/" && \
+            /s5cmd --exclude "checkouts/*" sync  "/usr/local/cargo/git/*" "s3://platform-runner-cache/cache-mounts/git/" && \
+            /s5cmd sync "/platform/target/*" "s3://platform-runner-cache/cache-mounts/target/"
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
     - name: Extract Data into buildx context

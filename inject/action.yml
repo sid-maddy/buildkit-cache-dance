@@ -29,9 +29,9 @@ runs:
             --mount=type=cache,sharing=locked,id=cargo_git,target=/usr/local/cargo/git \
             --mount=type=cache,sharing=locked,id=deps_target,target=/platform/target/deps \
             --mount=type=cache,sharing=locked,id=drive_target,target=/platform/target/drive \
-            /s5cmd sync 's3://platform-runner-cache/cache-mounts/registry/*' '/usr/local/cargo/registry' && \
-            /s5cmd sync 's3://platform-runner-cache/cache-mounts/git/*' '/usr/local/cargo/git' && \
-            /s5cmd sync 's3://platform-runner-cache/cache-mounts/target/*' '/platform/target' && \
+            /s5cmd --exclude "src/*" sync "s3://platform-runner-cache/cache-mounts/registry/*" "/usr/local/cargo/registry" && \
+            /s5cmd --exclude "checkouts/*" sync "s3://platform-runner-cache/cache-mounts/git/*" "/usr/local/cargo/git" && \
+            /s5cmd sync "s3://platform-runner-cache/cache-mounts/target/*" "/platform/target" && \
             tree -L 3 /usr/local/cargo && \
             tree -L 3 /platform/target && \
             chmod 777 -R /usr/local/cargo/registry || true && \
