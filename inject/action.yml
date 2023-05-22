@@ -25,11 +25,13 @@ runs:
         FROM peakcom/s5cmd:v2.0.0
         RUN apk add tree
         COPY buildstamp buildstamp
-        RUN --mount=type=cache,sharing=locked,id=cargo_registry,target=/usr/local/cargo/registry \
+        RUN --mount=type=cache,sharing=locked,id=cargo_registry_index,target=/usr/local/cargo/registry/index \
+            --mount=type=cache,sharing=locked,id=cargo_registry_cache,target=/usr/local/cargo/registry/cache \
             --mount=type=cache,sharing=locked,id=cargo_git,target=/usr/local/cargo/git \
             --mount=type=cache,sharing=locked,id=deps_target,target=/platform/target/deps \
             --mount=type=cache,sharing=locked,id=drive_target,target=/platform/target/drive \
-            /s5cmd sync --exclude */src/* s3://platform-runner-cache/cache-mounts/registry/* /usr/local/cargo/registry && \
+            /s5cmd sync s3://platform-runner-cache/cache-mounts/registry/index/* /usr/local/cargo/registry/index && \
+            /s5cmd sync s3://platform-runner-cache/cache-mounts/registry/cache/* /usr/local/cargo/registry/cache && \
             /s5cmd sync --exclude */checkouts/* s3://platform-runner-cache/cache-mounts/git/* /usr/local/cargo/git && \
             /s5cmd sync s3://platform-runner-cache/cache-mounts/target/* /platform/target && \
             tree -L 3 /usr/local/cargo && \
