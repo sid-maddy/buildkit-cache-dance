@@ -32,13 +32,11 @@ runs:
             /s5cmd sync 's3://platform-runner-cache/cache-mounts/registry/*' '/usr/local/cargo/registry' && \
             /s5cmd sync 's3://platform-runner-cache/cache-mounts/git/*' '/usr/local/cargo/git' && \
             /s5cmd sync 's3://platform-runner-cache/cache-mounts/target/*' '/platform/target' && \
-            wait && \
             tree -L 3 /usr/local/cargo && \
             tree -L 3 /platform/target && \
             chmod 777 -R /usr/local/cargo/registry || true && \
             chmod 777 -R /usr/local/cargo/git || true && \
-            chmod 777 -R /platform/target || true && \
-            sync && sleep 5
+            chmod 777 -R /platform/target || true
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
     - name: Inject Data into buildx context
