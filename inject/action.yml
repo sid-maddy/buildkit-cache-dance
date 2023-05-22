@@ -37,7 +37,8 @@ runs:
             tree -L 3 /platform/target && \
             chmod 777 -R /usr/local/cargo/registry || true && \
             chmod 777 -R /usr/local/cargo/git || true && \
-            chmod 777 -R /platform/target || true
+            chmod 777 -R /platform/target || true &&
+            sync && sleep 5
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
     - name: Inject Data into buildx context
