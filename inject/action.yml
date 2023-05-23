@@ -40,7 +40,7 @@ runs:
             chmod 777 -R /usr/local/cargo/registry/cache/ || true && \
             chmod 777 -R /usr/local/cargo/git/db/ || true && \
             chmod 777 -R /platform/target || true && \
-            CACHEDATE=`date '+%Y-%m-%d %H:%M:%S' -d@"$((\`date +%s\`-2))"` && \
+            CACHEDATE="`date '+%Y-%m-%d %H:%M:%S' -d@"$((\`date +%s\`-2))"`" && \
             find /usr/local/cargo/registry/index/ -exec touch -d "$CACHEDATE" {} + &&\
             find /usr/local/cargo/registry/cache/ -exec touch -d "$CACHEDATE" {} + && \
             find /usr/local/cargo/git/db/ -exec touch -d "$CACHEDATE" {} + && \
