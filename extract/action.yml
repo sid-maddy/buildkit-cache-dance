@@ -21,11 +21,11 @@ runs:
         FROM peakcom/s5cmd:v2.0.0
         RUN apk add tree
         COPY buildstamp buildstamp
-        RUN --mount=type=cache,sharing=locked,id=cargo_registry_index,target=/usr/local/cargo/registry/index \
-            --mount=type=cache,sharing=locked,id=cargo_registry_cache,target=/usr/local/cargo/registry/cache \
-            --mount=type=cache,sharing=locked,id=cargo_git,target=/usr/local/cargo/git/db \
-            --mount=type=cache,sharing=locked,id=deps_target,target=/platform/target/deps \
-            --mount=type=cache,sharing=locked,id=drive_target,target=/platform/target/drive \
+        RUN --mount=type=cache,sharing=shared,id=cargo_registry_index,target=/usr/local/cargo/registry/index \
+            --mount=type=cache,sharing=shared,id=cargo_registry_cache,target=/usr/local/cargo/registry/cache \
+            --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git/db \
+            --mount=type=cache,sharing=shared,id=deps_target,target=/platform/target/deps \
+            --mount=type=cache,sharing=shared,id=drive_target,target=/platform/target/drive \
             /s5cmd sync '/usr/local/cargo/registry/index/*' s3://platform-runner-cache/cache-mounts/registry/index/ & \
             /s5cmd sync '/usr/local/cargo/registry/cache/*' s3://platform-runner-cache/cache-mounts/registry/cache/ & \
             /s5cmd sync '/usr/local/cargo/git/db/*' s3://platform-runner-cache/cache-mounts/git/db/ & \
