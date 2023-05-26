@@ -43,7 +43,7 @@ runs:
                 /usr/local/cargo/registry/cache/ \
                 /usr/local/cargo/git/db/ \
                 /platform/target/ \
-                -exec touch -d `date +%Y.%m.%d-%H:%M:%S -d@"$((\`date +%s\`-2))"` {} + && \
+                -exec touch -d `date +%Y.%m.%d-%H:%M:%S -d@"$((\`date +%s\`-2))"` {} +
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
     - name: Inject Data into buildx context
