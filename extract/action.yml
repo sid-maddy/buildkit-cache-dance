@@ -36,18 +36,4 @@ runs:
       shell: bash
       run: |
         docker buildx build -f ${{ inputs.scratch-dir }}/Dancefile.extract ${{ inputs.scratch-dir }}
-    # - name: Create Extraction Image
-    #   shell: bash
-    #   run: |
-    #     docker rm -f cache-container && docker create -ti --name cache-container dance:extract
-    # - name: Unpack Docker Image into Scratch
-    #   shell: bash
-    #   run: |
-    #     docker cp -L cache-container:/var/dance-cache - | tar -x -C ${{ inputs.scratch-dir }}
-    # - name: Move Cache into Its Place
-    #   shell: bash
-    #   run: |
-    #     sudo rm -rf ${{ inputs.cache-source }}
-    #     mv ${{ inputs.scratch-dir }}/dance-cache ${{ inputs.cache-source }}
-    #     pwd
-    #     ls
+    

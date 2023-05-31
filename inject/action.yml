@@ -32,7 +32,7 @@ runs:
             /s5cmd sync s3://platform-runner-cache/cache-mounts/registry/index/* /usr/local/cargo/registry/index > /dev/null & \
             /s5cmd sync s3://platform-runner-cache/cache-mounts/registry/cache/* /usr/local/cargo/registry/cache > /dev/null & \
             /s5cmd sync s3://platform-runner-cache/cache-mounts/git/db/* /usr/local/cargo/git/db > /dev/null & \
-            /s5cmd sync s3://platform-runner-cache/cache-mounts/target/* /platform/target & \
+            /s5cmd sync s3://platform-runner-cache/cache-mounts/target/* /platform/target > /dev/null & \
             wait && \
             chmod 777 -R /usr/local/cargo/registry/index/ || true && \
             chmod 777 -R /usr/local/cargo/registry/cache/ || true && \
