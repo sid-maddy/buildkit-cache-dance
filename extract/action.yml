@@ -14,6 +14,7 @@ runs:
       shell: bash
       run: |
         date --iso=ns | tee ${{ inputs.scratch-dir }}/buildstamp
+
     - name: Prepare Dancefile to Access Caches
       shell: bash
       run: |
@@ -32,8 +33,8 @@ runs:
             wait
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
+
     - name: Extract Data into buildx context
       shell: bash
       run: |
         docker buildx build -f ${{ inputs.scratch-dir }}/Dancefile.extract ${{ inputs.scratch-dir }}
-    
