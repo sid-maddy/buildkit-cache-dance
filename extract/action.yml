@@ -32,7 +32,8 @@ runs:
             /s5cmd sync '/usr/local/cargo/git/db/*' s3://platform-runner-cache/cache-mounts/git/db/ & \
             /s5cmd sync '/platform/target/*' s3://platform-runner-cache/cache-mounts/target/ & \
             /s5cmd sync '/platform/.yarn/unplugged/*' s3://platform-runner-cache/cache-mounts/unplugged/ & \
-            wait
+            wait && \
+            tree -L 4 /platform/.yarn/unplugged
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
 
