@@ -31,15 +31,15 @@ runs:
             --mount=type=cache,sharing=shared,id=cargo_registry_cache,target=/usr/local/cargo/registry/cache \
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git/db \
             --mount=type=cache,sharing=shared,id=target,target=/platform/target \
-            --mount=type=cache,sharing=shared,id=unplugged,target=/platform/.yarn/unplugged \
-            tree -L 4 /platform/.yarn/unplugged && \
+            --mount=type=cache,sharing=shared,id=unplugged,target=/tmp/unplugged \
+            tree -L 4 /tmp/unplugged && \
             /s5cmd sync s3://platform-runner-cache/cache-mounts/registry/index/* /usr/local/cargo/registry/index > /dev/null & \
             /s5cmd sync s3://platform-runner-cache/cache-mounts/registry/cache/* /usr/local/cargo/registry/cache > /dev/null & \
             /s5cmd sync s3://platform-runner-cache/cache-mounts/git/db/* /usr/local/cargo/git/db > /dev/null & \
             /s5cmd sync s3://platform-runner-cache/cache-mounts/target/* /platform/target > /dev/null & \
-            /s5cmd sync s3://platform-runner-cache/cache-mounts/unplugged/* /platform/.yarn/unplugged & \
+            /s5cmd sync s3://platform-runner-cache/cache-mounts/unplugged/* /tmp/unplugged & \
             wait && \
-            tree -L 4 /platform/.yarn/unplugged && \
+            tree -L 4 /tmp/unplugged && \
             chmod 777 -R /usr/local/cargo/registry/index/ || true && \
             chmod 777 -R /usr/local/cargo/registry/cache/ || true && \
             chmod 777 -R /usr/local/cargo/git/db/ || true && \
