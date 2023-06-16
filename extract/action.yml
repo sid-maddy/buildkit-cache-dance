@@ -26,11 +26,13 @@ runs:
             --mount=type=cache,sharing=shared,id=cargo_registry_cache,target=/usr/local/cargo/registry/cache \
             --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git/db \
             --mount=type=cache,sharing=shared,id=target,target=/platform/target \
+            --mount=type=cache,sharing=shared,id=wasm-dpp-target,target=/platform/wasm-dpp-target \
             --mount=type=cache,sharing=shared,id=unplugged,target=/tmp/unplugged \
             /s5cmd sync '/usr/local/cargo/registry/index/*' s3://platform-runner-cache/cache-mounts/registry/index/ & \
             /s5cmd sync '/usr/local/cargo/registry/cache/*' s3://platform-runner-cache/cache-mounts/registry/cache/ & \
             /s5cmd sync '/usr/local/cargo/git/db/*' s3://platform-runner-cache/cache-mounts/git/db/ & \
             /s5cmd sync '/platform/target/*' s3://platform-runner-cache/cache-mounts/target/ & \
+            /s5cmd sync '/platform/wasm-dpp-target/*' s3://platform-runner-cache/cache-mounts/wasm-dpp-target/ & \
             /s5cmd cp '/tmp/unplugged/*' s3://platform-runner-cache/cache-mounts/unplugged/ & \
             wait
         EOF
