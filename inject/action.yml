@@ -32,7 +32,7 @@ runs:
             --mount=type=cache,sharing=shared,id=target,target=/cache-mounts/target \
             --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/cache-mounts/wasm_dpp_target \ 
             --mount=type=cache,sharing=shared,id=unplugged,target=/cache-mounts/unplugged \
-            aws s3 sync 's3://platform-runner-cache/cache-mounts/*' /cache-mounts
+            aws s3 sync s3://platform-runner-cache/cache-mounts /aws/cache-mounts
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.inject
 
