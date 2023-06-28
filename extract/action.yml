@@ -22,19 +22,13 @@ runs:
         FROM peakcom/s5cmd:v2.0.0
         RUN apk add tree
         COPY buildstamp buildstamp
-        RUN --mount=type=cache,sharing=shared,id=cargo_registry_index,target=/usr/local/cargo/registry/index \
-            --mount=type=cache,sharing=shared,id=cargo_registry_cache,target=/usr/local/cargo/registry/cache \
-            --mount=type=cache,sharing=shared,id=cargo_git,target=/usr/local/cargo/git/db \
-            --mount=type=cache,sharing=shared,id=target,target=/platform/target \
-            --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/platform/wasm_dpp_target \
-            --mount=type=cache,sharing=shared,id=unplugged,target=/tmp/unplugged \
-            /s5cmd sync '/usr/local/cargo/registry/index/*' s3://platform-runner-cache/cache-mounts/registry/index/ & \
-            /s5cmd sync '/usr/local/cargo/registry/cache/*' s3://platform-runner-cache/cache-mounts/registry/cache/ & \
-            /s5cmd sync '/usr/local/cargo/git/db/*' s3://platform-runner-cache/cache-mounts/git/db/ & \
-            /s5cmd sync '/platform/target/*' s3://platform-runner-cache/cache-mounts/target/ & \
-            /s5cmd sync '/platform/wasm_dpp_target/*' s3://platform-runner-cache/cache-mounts/wasm_dpp_target/ & \
-            /s5cmd cp '/tmp/unplugged/*' s3://platform-runner-cache/cache-mounts/unplugged/ & \
-            wait
+        RUN --mount=type=cache,sharing=shared,id=cargo_registry_index,target=/cache-mounts/cargo_registry_index \
+            --mount=type=cache,sharing=shared,id=cargo_registry_cache,target=/cache-mounts/cargo_registry_cache \
+            --mount=type=cache,sharing=shared,id=cargo_git,target=/cache-mounts/cargo_git \
+            --mount=type=cache,sharing=shared,id=target,target=/cache-mounts/target \
+            --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/cache-mounts/wasm_dpp_target \ 
+            --mount=type=cache,sharing=shared,id=unplugged,target=/cache-mounts/unplugged \
+            /s5cmd sync '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
 
