@@ -34,7 +34,7 @@ runs:
             --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/cache-mounts/wasm_dpp_target \ 
             --mount=type=cache,sharing=shared,id=unplugged,target=/cache-mounts/unplugged \
             tree -L 4 /cache-mounts/unplugged && \
-            /s5cmd --log debug --use-list-objects-v1 --stat sync s3://platform-runner-cache/cache-mounts/* /cache-mounts && \
+            /s5cmd --log debug --use-list-objects-v1 --stat cp s3://platform-runner-cache/cache-mounts/* /cache-mounts && \
             tree -L 4 /cache-mounts/unplugged && \
             chmod 777 -R /cache-mounts || true && \
             find /cache-mounts -exec touch -d `date +%Y.%m.%d-%H:%M:%S -d@"$((\`date +%s\`-2))"` {} +
