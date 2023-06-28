@@ -29,7 +29,7 @@ runs:
             --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/cache-mounts/wasm_dpp_target \ 
             --mount=type=cache,sharing=shared,id=unplugged,target=/cache-mounts/unplugged \
             tree -L 4 /cache-mounts/unplugged && \
-            /s5cmd sync '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/ && \
+            /s5cmd --log trace sync '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/ && \
             tree -L 4 /cache-mounts/unplugged
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
