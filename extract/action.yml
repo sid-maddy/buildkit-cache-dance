@@ -28,7 +28,7 @@ runs:
             --mount=type=cache,sharing=shared,id=target,target=/cache-mounts/target \
             --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/cache-mounts/wasm_dpp_target \ 
             --mount=type=cache,sharing=shared,id=unplugged,target=/cache-mounts/unplugged \
-            /s5cmd --stat sync --no-follow-symlinks /cache-mounts/* s3://platform-runner-cache/cache-mounts/
+            /s5cmd --stat sync --no-follow-symlinks '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
 
