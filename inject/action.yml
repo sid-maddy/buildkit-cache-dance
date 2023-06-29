@@ -34,7 +34,7 @@ runs:
             --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/cache-mounts/wasm_dpp_target \ 
             --mount=type=cache,sharing=shared,id=unplugged,target=/cache-mounts/unplugged \
             tree -L 4 /cache-mounts/unplugged && \
-            /s5cmd --stat sync s3://platform-runner-cache/cache-mounts /cache-mounts --no-follow-symlinks && \
+            /s5cmd --stat sync --no-follow-symlinks s3://platform-runner-cache/cache-mounts /cache-mounts && \
             tree -L 4 /cache-mounts/unplugged && \
             chmod 777 -R /cache-mounts || true
         EOF
