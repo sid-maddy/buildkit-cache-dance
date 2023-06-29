@@ -19,7 +19,8 @@ runs:
       shell: bash
       run: |
         cat > ${{ inputs.scratch-dir }}/Dancefile.extract <<EOF
-        FROM amazon/aws-cli:2.12.3
+        FROM peakcom/s5cmd:v2.1.0
+        RUN apk add tree
         COPY buildstamp buildstamp
         RUN --mount=type=cache,sharing=shared,id=cargo_registry_index,target=/cache-mounts/cargo_registry_index \
             --mount=type=cache,sharing=shared,id=cargo_registry_cache,target=/cache-mounts/cargo_registry_cache \
@@ -27,7 +28,9 @@ runs:
             --mount=type=cache,sharing=shared,id=target,target=/cache-mounts/target \
             --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/cache-mounts/wasm_dpp_target \ 
             --mount=type=cache,sharing=shared,id=unplugged,target=/cache-mounts/unplugged \
-            aws s3 sync /cache-mounts s3://platform-runner-cache/cache-mounts --only-show-errors --no-follow-symlinks
+            tree -L 4 /cache-mounts/unplugged && \
+            /s5cmd --stat sync --no-follow-symlinks /cache-mounts s3://platform-runner-cache/cache-mounts && \
+            tree -L 4 /cache-mounts/unplugged
         EOF
         cat ${{ inputs.scratch-dir }}/Dancefile.extract
 
