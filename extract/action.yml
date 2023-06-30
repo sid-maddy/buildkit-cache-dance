@@ -41,7 +41,7 @@ runs:
             --mount=type=cache,sharing=shared,id=cargo_registry_cache,target=/cache-mounts/cargo_registry_cache \
             --mount=type=cache,sharing=shared,id=cargo_git,target=/cache-mounts/cargo_git \
             --mount=type=cache,sharing=shared,id=target_${TARGETARCH},target=/cache-mounts/target \
-            --mount=type=cache,sharing=shared,id=wasm_dpp_target,target=/cache-mounts/wasm_dpp_target \ 
+            --mount=type=cache,sharing=shared,id=target_wasm,target=/cache-mounts/target_wasm \ 
             --mount=type=cache,sharing=shared,id=unplugged_${TARGETARCH},target=/cache-mounts/unplugged \
             /s5cmd --stat sync --no-follow-symlinks '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/
         EOF
