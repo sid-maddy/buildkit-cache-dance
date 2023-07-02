@@ -32,13 +32,15 @@ runs:
 
     - name: Echo platforms input
       shell: bash
-      run: set -x
-           echo ${{ inputs.platforms }}
+      run: |
+        set -x
+        echo ${{ inputs.platforms }}
 
     - name: Echo platforms step
       shell: bash
-      run: set -x
-           echo ${{ steps.platforms.outputs.result }}
+      run: |
+        set -x
+        echo ${{ steps.platforms.outputs.result }}
 
     - name: Prepare Dancefile to Access Caches
       shell: bash
