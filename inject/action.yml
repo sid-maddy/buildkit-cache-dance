@@ -39,10 +39,8 @@ runs:
             `sync --no-follow-symlinks s3://platform-runner-cache/cache-mounts/${mount}/* /cache-mounts/${mount}`
           )).join('\n');
 
-          return {
-            cacheMountArgs,
-            s5commands,
-          };
+          core.setOutput('cacheMountArgs', cacheMountArgs);
+          core.setOutput('s5commands', s5commands);
 
     - name: Prepare Dancefile to Access Caches
       shell: bash
