@@ -42,6 +42,12 @@ runs:
         set -x
         echo ${{ steps.platforms.outputs.result }}
 
+    - name: Inspect builder
+      shell: bash
+      run: |
+        docker buildx ls
+        docker buildx inspect
+
     - name: Prepare Dancefile to Access Caches
       shell: bash
       run: |
