@@ -8,7 +8,7 @@ inputs:
     default: scratch
     description: "Where the action is stores some temporary files for its processing. Default: `scratch`"
   mounts:
-    description: Docker build cahe mounts list
+    description: Docker build cache mounts list
     required: true
 
 runs:
