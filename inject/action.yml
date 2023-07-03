@@ -32,8 +32,8 @@ runs:
           const mountIds = `${{ inputs.mounts }}`.split(/[\r\n,]+/);
           
           const cacheMountArgs = mountIds.map((mount) => (
-            `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount} \\`
-          )).join('\n');
+            `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount}`
+          )).join(' ');
           
           const s5commands = mountIds.map((mount) => (
             `sync --no-follow-symlinks s3://platform-runner-cache/cache-mounts/${mount}/* /cache-mounts/${mount}`
