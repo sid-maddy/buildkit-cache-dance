@@ -28,24 +28,30 @@ runs:
       uses: actions/github-script@v6
       id: mounts
       with:
-        result-encoding: string
         script: |
-          return '${{ inputs.mounts }}'
-            .split(/[\r\n,]+/);
-            .map((mount) => (
-              `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount} \`
-            ))
-            .join('\n');
+          const mountIds = '${{ inputs.mounts }}'.split(/[\r\n,]+/);
+          
+          const cacheMountArgs = mountIds.map((mount) => (
+            `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount} \`
+          )).join('\n');
+          
+          const s5commands = mountIds.map((mount) => (
+            `sync --no-follow-symlinks s3://platform-runner-cache/cache-mounts/${mount}/* /cache-mounts/${mount}`
+          )).join('\n');
+
+          return {
+            cacheMountArgs,
+            s5commands,
+          };
 
     - name: Prepare Dancefile to Access Caches
       shell: bash
       run: |
         cat > ${{ inputs.scratch-dir }}/Dancefile.inject << 'EOF'
         FROM peakcom/s5cmd:v2.1.0
-        ARG  TARGETARCH
         COPY buildstamp buildstamp
-        RUN ${{ steps.mounts.outputs.result }}
-            /s5cmd --stat sync --no-follow-symlinks s3://platform-runner-cache/cache-mounts/* /cache-mounts && \
+        RUN ${{ steps.mounts.outputs.cacheMountArgs }}
+            echo '${{ steps.mounts.outputs.s5commands }}' | /s5cmd --stat run && \
             chmod 777 -R /cache-mounts || true && \
             find /cache-mounts -exec touch -d `date +%Y.%m.%d-%H:%M:%S -d@"$((\`date +%s\`-2))"` {} +
         EOF

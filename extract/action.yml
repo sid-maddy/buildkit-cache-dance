@@ -26,7 +26,7 @@ runs:
         result-encoding: string
         script: |
           return '${{ inputs.mounts }}'
-            .split(/[\r\n,]+/);
+            .split(/[\r\n,]+/)
             .map((mount) => (
               `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount} \`
             ))
@@ -37,7 +37,6 @@ runs:
       run: |
         cat > ${{ inputs.scratch-dir }}/Dancefile.extract << 'EOF'
         FROM peakcom/s5cmd:v2.1.0
-        ARG TARGETARCH
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.result }}
             /s5cmd --stat sync --no-follow-symlinks '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/
