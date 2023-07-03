@@ -42,26 +42,17 @@ runs:
           core.setOutput('cacheMountArgs', cacheMountArgs);
           core.setOutput('s5commands', s5commands);
 
-    - name: Prepare Dancefile to Access Caches
+    - name: Inject Data into buildx context
       shell: bash
       run: |
-        cat > ${{ inputs.scratch-dir }}/Dancefile.inject << 'EOF'
+        docker build --file-<<'EOF'
         FROM peakcom/s5cmd:v2.1.0
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.cacheMountArgs }}
             echo '${{ steps.mounts.outputs.s5commands }}' | /s5cmd --stat run && \
             chmod 777 -R /cache-mounts || true && \
             find /cache-mounts -exec touch -d `date +%Y.%m.%d-%H:%M:%S -d@"$((\`date +%s\`-2))"` {} +
-        EOF
-        cat ${{ inputs.scratch-dir }}/Dancefile.inject
-
-    - name: Inject Data into buildx context
-      shell: bash
-      run: |
-        docker buildx build \
-          --platform ${{ steps.platforms.outputs.result }} \
-          --file ${{ inputs.scratch-dir }}/Dancefile.inject \
-          ${{ inputs.cache-source }}
+        EOF ${{ inputs.cache-source }}
 
     - name: Clean Directories
       shell: bash

@@ -32,21 +32,12 @@ runs:
             ))
             .join('\n');
 
-    - name: Prepare Dancefile to Access Caches
+    - name: Extract Data into buildx context
       shell: bash
       run: |
-        cat > ${{ inputs.scratch-dir }}/Dancefile.extract << 'EOF'
+        docker build --file-<< 'EOF'
         FROM peakcom/s5cmd:v2.1.0
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.result }}
             /s5cmd --stat sync --no-follow-symlinks '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/
-        EOF
-        cat ${{ inputs.scratch-dir }}/Dancefile.extract
-
-    - name: Extract Data into buildx context
-      shell: bash
-      run: |
-        docker buildx build \
-          --platform ${{ steps.platforms.outputs.result }} \
-          --file ${{ inputs.scratch-dir }}/Dancefile.extract \
-          ${{ inputs.scratch-dir }}
+        EOF ${{ inputs.scratch-dir }}
