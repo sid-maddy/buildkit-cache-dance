@@ -32,7 +32,7 @@ runs:
           const mountIds = `${{ inputs.mounts }}`.split(/[\r\n,]+/);
           
           const cacheMountArgs = mountIds.map((mount) => (
-            `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount} \`
+            `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount} \\`
           )).join('\n');
           
           const s5commands = mountIds.map((mount) => (
