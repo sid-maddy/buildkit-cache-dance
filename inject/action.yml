@@ -56,7 +56,7 @@ runs:
     - name: Prepare Dancefile to Access Caches
       shell: bash
       run: |
-        cat > ${{ inputs.scratch-dir }}/Dancefile.inject <<EOF
+        cat > ${{ inputs.scratch-dir }}/Dancefile.inject << 'EOF'
         FROM peakcom/s5cmd:v2.1.0
         ARG TARGETPLATFORM TARGETOS TARGETARCH TARGETVARIANT BUILDPLATFORM BUILDOS BUILDARCH BUILDVARIANT
         RUN echo $TARGETPLATFORM
