@@ -45,14 +45,14 @@ runs:
     - name: Inject Data into buildx context
       shell: bash
       run: |
-        docker build --file-<<'EOF'
+        docker build ${{ inputs.cache-source }} --file - <<EOF
         FROM peakcom/s5cmd:v2.1.0
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.cacheMountArgs }}
             echo '${{ steps.mounts.outputs.s5commands }}' | /s5cmd --stat run && \
             chmod 777 -R /cache-mounts || true && \
             find /cache-mounts -exec touch -d `date +%Y.%m.%d-%H:%M:%S -d@"$((\`date +%s\`-2))"` {} +
-        EOF ${{ inputs.cache-source }}
+        EOF
 
     - name: Clean Directories
       shell: bash

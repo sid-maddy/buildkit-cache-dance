@@ -35,9 +35,9 @@ runs:
     - name: Extract Data into buildx context
       shell: bash
       run: |
-        docker build --file-<< 'EOF'
+        docker build ${{ inputs.scratch-dir }} --file - <<EOF
         FROM peakcom/s5cmd:v2.1.0
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.result }}
             /s5cmd --stat sync --no-follow-symlinks '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/
-        EOF ${{ inputs.scratch-dir }}
+        EOF
