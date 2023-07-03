@@ -7,9 +7,9 @@ inputs:
   scratch-dir:
     default: scratch
     description: "Where the action is stores some temporary files for its processing. Default: `scratch`"
-  platforms:
-    description: Docker image platform to build
-    default: amd64
+  mounts:
+    description: Docker build cache mounts list
+    required: true
 
 runs:
   using: composite
@@ -24,31 +24,34 @@ runs:
       run: |
         date --iso=ns | tee ${{ inputs.cache-source }}/buildstamp
 
-    - name: Format platforms for docker
+    - name: Prepare list of cache mounts for Dancefile
       uses: actions/github-script@v6
-      id: platforms
+      id: mounts
       with:
-        result-encoding: string
         script: |
-           return '${{inputs.platforms}}'
-              .split(',')
-              .map((platform) => `linux/${platform.trim()}`)
-              .join(',')
+          const mountIds = '${{ inputs.mounts }}'.split(/[\r\n,]+/);
+          
+          const cacheMountArgs = mountIds.map((mount) => (
+            `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount} \`
+          )).join('\n');
+          
+          const s5commands = mountIds.map((mount) => (
+            `sync --no-follow-symlinks s3://platform-runner-cache/cache-mounts/${mount}/* /cache-mounts/${mount}`
+          )).join('\n');
+
+          return {
+            cacheMountArgs,
+            s5commands,
+          };
 
     - name: Prepare Dancefile to Access Caches
       shell: bash
       run: |
         cat > ${{ inputs.scratch-dir }}/Dancefile.inject << 'EOF'
         FROM peakcom/s5cmd:v2.1.0
-        ARG  TARGETARCH
         COPY buildstamp buildstamp
-        RUN --mount=type=cache,sharing=shared,id=cargo_registry_index,target=/cache-mounts/cargo_registry_index \
-            --mount=type=cache,sharing=shared,id=cargo_registry_cache,target=/cache-mounts/cargo_registry_cache \
-            --mount=type=cache,sharing=shared,id=cargo_git,target=/cache-mounts/cargo_git \
-            --mount=type=cache,sharing=shared,id=target_$TARGETARCH,target=/cache-mounts/target_$TARGETARCH \
-            --mount=type=cache,sharing=shared,id=target_wasm,target=/cache-mounts/target_wasm \ 
-            --mount=type=cache,sharing=shared,id=unplugged_$TARGETARCH,target=/cache-mounts/unplugged_$TARGETARCH \
-            /s5cmd --stat sync --no-follow-symlinks s3://platform-runner-cache/cache-mounts/* /cache-mounts && \
+        RUN ${{ steps.mounts.outputs.cacheMountArgs }}
+            echo '${{ steps.mounts.outputs.s5commands }}' | /s5cmd --stat run && \
             chmod 777 -R /cache-mounts || true && \
             find /cache-mounts -exec touch -d `date +%Y.%m.%d-%H:%M:%S -d@"$((\`date +%s\`-2))"` {} +
         EOF
