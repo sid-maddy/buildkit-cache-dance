@@ -28,9 +28,9 @@ runs:
           return `${{ inputs.mounts }}`
             .split(/[\r\n,]+/)
             .map((mount) => (
-              `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount} \`
+              `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount}`
             ))
-            .join('\n');
+            .join(' ');
 
     - name: Extract Data into buildx context
       shell: bash
@@ -38,6 +38,6 @@ runs:
         docker build ${{ inputs.scratch-dir }} --file - <<EOF
         FROM peakcom/s5cmd:v2.1.0
         COPY buildstamp buildstamp
-        RUN ${{ steps.mounts.outputs.result }}
+        RUN ${{ steps.mounts.outputs.result }} \
             /s5cmd --stat sync --no-follow-symlinks '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/
         EOF
