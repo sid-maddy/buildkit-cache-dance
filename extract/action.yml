@@ -10,6 +10,9 @@ inputs:
   mounts:
     description: Docker build cache mounts list
     required: true
+  bucket:
+    description: Bucket name
+    required: true
 
 runs:
   using: composite
@@ -41,5 +44,5 @@ runs:
         FROM peakcom/s5cmd:v2.1.0
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.result }} \
-            /s5cmd --stat --log error sync --no-follow-symlinks '/cache-mounts/*' s3://platform-runner-cache/cache-mounts/
+            /s5cmd --stat --log error sync --no-follow-symlinks '/cache-mounts/*' s3://${bucket}/cache-mounts/
         EOF
