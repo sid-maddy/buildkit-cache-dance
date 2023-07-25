@@ -41,7 +41,7 @@ runs:
           )).join(' ');
           
           const s5commands = mountIds.map((mount) => (
-            `sync --no-follow-symlinks s3://${bucket}/cache-mounts/${mount}/* /cache-mounts/${mount}`
+            `sync --no-follow-symlinks s3://${inputs.bucket}/cache-mounts/${mount}/* /cache-mounts/${mount}`
           )).join('\n');
 
           core.setOutput('cacheMountArgs', cacheMountArgs);
