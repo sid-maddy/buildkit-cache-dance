@@ -10,6 +10,9 @@ inputs:
   mounts:
     description: Docker build cache mounts list
     required: true
+  bucket:
+    description: Bucket name
+    required: true
 
 runs:
   using: composite
@@ -38,7 +41,7 @@ runs:
           )).join(' ');
           
           const s5commands = mountIds.map((mount) => (
-            `sync --no-follow-symlinks s3://platform-runner-cache/cache-mounts/${mount}/* /cache-mounts/${mount}`
+            `sync --no-follow-symlinks s3://${{inputs.bucket}}/cache-mounts/${mount}/* /cache-mounts/${mount}`
           )).join('\n');
 
           core.setOutput('cacheMountArgs', cacheMountArgs);
