@@ -1,65 +1,83 @@
 # The BuildKit Cache Dance
 
-Workaround buildkit/buildx's lack of integrated caching solution
+Workaround for Buildx/BuildKit's [lack of support](https://github.com/moby/buildkit/issues/1512) for
+[the dedicated `RUN` caches](https://docs.docker.com/build/cache/#use-the-dedicated-run-cache) when building Docker
+images in GitHub Actions.
 
-```
+```yaml
 ---
 name: Build
-on: push
+
+on:
+  push:
+    branches: [main]
+    tags: [v*]
 
 jobs:
   build:
-    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
       - name: Set up Docker Buildx
+        id: buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          cleanup: false
+          platforms: ${{ matrix.platform }}
 
-      - name: Docker meta
+      - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: YOUR_IMAGE
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=edge
+            type=ref,event=tag
+            type=sha,format=long
 
-      - name: Go Build Cache for Docker
-        uses: actions/cache@v3
+      - name: Inject Docker Build(x|Kit) cache mounts
+        uses: sid-maddy/buildkit-cache-dance/inject@main
         with:
-          path: go-build-cache
-          key: ${{ runner.os }}-go-build-cache-${{ hashFiles('**/go.sum') }}
-
-      - name: inject go-build-cache into docker
-        uses: overmindtech/buildkit-cache-dance/inject@main
-        with:
-          cache-source: go-build-cache
+          cache-mounts: |
+            cargo-registry
+            rust-target-release
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          key: rust-buildkit-cache-${{ matrix.platform }}-${{ hashFiles('Cargo.toml', 'Cargo.lock') }}
+          restore-keys: |
+            rust-buildkit-cache-${{ matrix.platform }}-
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
-          context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          file: build/package/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          builder: ${{ steps.buildx.outputs.name }}
+          cache-from: type=gha,scope=${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platform }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
-      - name: extract go-build-cache from docker
-        uses: overmindtech/buildkit-cache-dance/extract@main
+      - name: Extract Docker Build(x|Kit) cache mounts
+        uses: sid-maddy/buildkit-cache-dance/extract@main
         with:
-          cache-source: go-build-cache
-
+          cache-mounts: |
+            cargo-registry
+            rust-target-release
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          key: rust-buildkit-cache-${{ matrix.platform }}-${{ hashFiles('Cargo.toml', 'Cargo.lock') }}
 ```
 
-Thanks to [Alexander Pravdin](https://github.com/speller) for the basic idea in [this comment](https://github.com/moby/buildkit/issues/1512).
+## Credits
+
+- [Alexander Pravdin](https://github.com/speller), for the basic idea in
+[this comment](https://github.com/moby/buildkit/issues/1512#issuecomment-1319736671).
+- <https://github.com/overmindtech/buildkit-cache-dance> and <https://github.com/dcginfra/buildkit-cache-dance>, for
+laying the foundations.
