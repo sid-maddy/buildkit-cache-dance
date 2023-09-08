@@ -55,7 +55,7 @@ runs:
         RUN yum install -y tree
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.cacheMountArgs }} <<EOT
-            echo '${{ steps.mounts.outputs.s3commands }}' | sh && \
+            echo -e '${{ steps.mounts.outputs.s3commands }}' | sh && \
             chmod 777 -R /cache-mounts || true && \
             tree -D -L 4 --timefmt '%Y-%m-%d %H:%M:%S' /cache-mounts || true
         EOT
