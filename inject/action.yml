@@ -41,7 +41,7 @@ runs:
           )).join(' ');
           
           const s3commands = mountIds.map((mount) => (
-            `aws s3 sync --no-follow-symlinks s3://${{inputs.bucket}}/cache-mounts/${mount} /cache-mounts/${mount}`
+            `aws s3 sync --no-follow-symlinks --quiet s3://${{inputs.bucket}}/cache-mounts/${mount} /cache-mounts/${mount}`
           )).join('\n');
 
           core.setOutput('cacheMountArgs', cacheMountArgs);
