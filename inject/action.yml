@@ -45,13 +45,14 @@ runs:
           )).join('\n');
 
           core.setOutput('cacheMountArgs', cacheMountArgs);
-          core.setOutput('s5commands', s5commands);
+          core.setOutput('s3commands', s3commands);
 
     - name: Inject Data into buildx context
       shell: bash
       run: |
         docker build ${{ inputs.cache-source }} --file - <<EOF
         FROM amazon/aws-cli:2.13.16
+        RUN yum install -y tree
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.cacheMountArgs }} <<EOT
             echo '${{ steps.mounts.outputs.s3commands }}' | sh && \
