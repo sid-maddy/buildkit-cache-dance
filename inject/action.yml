@@ -47,7 +47,7 @@ runs:
           core.setOutput('cacheMountArgs', cacheMountArgs);
           core.setOutput('s3commands', s3commands);
 
-    - name: Inject Data into buildx context
+    - name: Inject cache data into buildx context
       shell: bash
       run: |
         docker build ${{ inputs.cache-source }} --file - <<EOF

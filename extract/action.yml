@@ -37,7 +37,7 @@ runs:
             ))
             .join(' ');
 
-    - name: Extract Data into buildx context
+    - name: Extract cache data from buildx context
       shell: bash
       run: |
         docker build ${{ inputs.scratch-dir }} --file - <<EOF
