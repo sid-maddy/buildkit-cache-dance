@@ -51,7 +51,7 @@ runs:
       shell: bash
       run: |
         docker build ${{ inputs.cache-source }} --file - <<EOF
-        FROM amazon/aws-cli:2.13.16
+        FROM amazon/aws-cli:2.13.17
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.cacheMountArgs }} <<EOT
             echo -e '${{ steps.mounts.outputs.s3commands }}' | sh && \
