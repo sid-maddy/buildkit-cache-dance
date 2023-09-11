@@ -52,12 +52,10 @@ runs:
       run: |
         docker build ${{ inputs.cache-source }} --file - <<EOF
         FROM amazon/aws-cli:2.13.16
-        RUN yum install -y tree
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.cacheMountArgs }} <<EOT
             echo -e '${{ steps.mounts.outputs.s3commands }}' | sh && \
-            chmod 777 -R /cache-mounts || true && \
-            tree -D -L 4 --timefmt '%Y-%m-%d %H:%M:%S' /cache-mounts || true
+            chmod 777 -R /cache-mounts || true
         EOT
         EOF
 
