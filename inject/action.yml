@@ -40,23 +40,22 @@ runs:
             `--mount=type=cache,sharing=shared,id=${mount},target=/cache-mounts/${mount}`
           )).join(' ');
           
-          const s5commands = mountIds.map((mount) => (
-            `sync --no-follow-symlinks s3://${{inputs.bucket}}/cache-mounts/${mount}/* /cache-mounts/${mount}`
+          const s3commands = mountIds.map((mount) => (
+            `aws s3 sync --no-follow-symlinks --quiet s3://${{inputs.bucket}}/cache-mounts/${mount} /cache-mounts/${mount}`
           )).join('\n');
 
           core.setOutput('cacheMountArgs', cacheMountArgs);
-          core.setOutput('s5commands', s5commands);
+          core.setOutput('s3commands', s3commands);
 
-    - name: Inject Data into buildx context
+    - name: Inject cache data into buildx context
       shell: bash
       run: |
         docker build ${{ inputs.cache-source }} --file - <<EOF
-        FROM peakcom/s5cmd:v2.1.0
+        FROM amazon/aws-cli:2.13.17
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.cacheMountArgs }} <<EOT
-            echo '${{ steps.mounts.outputs.s5commands }}' | /s5cmd --stat --log error run && \
-            chmod 777 -R /cache-mounts || true && \
-            find /cache-mounts -exec touch -d `date +%Y.%m.%d-%H:%M:%S -d@"$((\`date +%s\`-2))"` {} +
+            echo -e '${{ steps.mounts.outputs.s3commands }}' | sh && \
+            chmod 777 -R /cache-mounts || true
         EOT
         EOF
 

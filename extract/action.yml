@@ -37,12 +37,12 @@ runs:
             ))
             .join(' ');
 
-    - name: Extract Data into buildx context
+    - name: Extract cache data from buildx context
       shell: bash
       run: |
         docker build ${{ inputs.scratch-dir }} --file - <<EOF
-        FROM peakcom/s5cmd:v2.1.0
+        FROM amazon/aws-cli:2.13.17
         COPY buildstamp buildstamp
         RUN ${{ steps.mounts.outputs.result }} \
-            /s5cmd --stat --log error sync --no-follow-symlinks '/cache-mounts/*' s3://${{inputs.bucket}}/cache-mounts/
+            aws s3 sync --no-follow-symlinks --quiet /cache-mounts s3://${{inputs.bucket}}/cache-mounts
         EOF
