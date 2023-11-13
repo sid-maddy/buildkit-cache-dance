@@ -1,5 +1,7 @@
 ---
-fail_fast: false
+default_language_version:
+  python: python3.11
+  node: system
 
 repos:
   - repo: meta
@@ -8,7 +10,7 @@ repos:
       - id: check-useless-excludes
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: check-added-large-files
       - id: check-merge-conflict
@@ -16,40 +18,47 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
-        args: [--markdown-linebreak-ext=md]
+        args:
+          - --markdown-linebreak-ext=md
         exclude: \.gitignore
 
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+
   - repo: https://github.com/lyz-code/yamlfix
-    rev: 1.12.0
+    rev: 1.15.0
     hooks:
       - id: yamlfix
-        args: [--config-file, .yamlfix.toml]
+        args:
+          - --config-file
+          - .yamlfix.toml
 
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.32.0
+    rev: v1.33.0
     hooks:
       - id: yamllint
-        args: [--strict]
+        args:
+          - --strict
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.23.3
+    rev: 0.27.1
     hooks:
       - id: check-github-actions
-        files: ^.*/action.ya?ml$
-        types: [yaml]
+        files: action.ya?ml$
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.35.0
+    rev: v0.37.0
     hooks:
-      - id: markdownlint
-        args: [--config, .markdownlint.yaml, --fix]
+      - id: markdownlint-fix
 
   - repo: https://github.com/sirwart/ripsecrets
-    rev: v0.1.5
+    rev: v0.1.7
     hooks:
       - id: ripsecrets
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.16.1
+    rev: v1.16.23
     hooks:
       - id: typos

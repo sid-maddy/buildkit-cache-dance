@@ -78,6 +78,6 @@ jobs:
 ## Credits
 
 - [Alexander Pravdin](https://github.com/speller), for the basic idea in
-[this comment](https://github.com/moby/buildkit/issues/1512#issuecomment-1319736671).
+  [this comment](https://github.com/moby/buildkit/issues/1512#issuecomment-1319736671).
 - <https://github.com/overmindtech/buildkit-cache-dance> and <https://github.com/dcginfra/buildkit-cache-dance>, for
-laying the foundations.
+  laying the foundations.
