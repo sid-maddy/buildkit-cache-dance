@@ -1,0 +1,132 @@
+---
+name: Inject cache
+description: Injects cache into the Docker Build(x|Kit) process
+
+inputs:
+  cache-mounts:
+    description: The newline-delimited list of Docker Build(x|kit) cache mounts
+    required: true
+  github-token:
+    description: GITHUB_TOKEN
+    required: true
+  key:
+    description: An explicit key for restoring and saving the cache
+    required: true
+  restore-keys:
+    description: |
+      An ordered list of keys to use for restoring stale cache if no cache hit occurred for key.
+      Note: `cache-hit` returns false in this case.
+    required: false
+
+outputs:
+  cache-hit:
+    description: A boolean value to indicate an exact match was found for the primary key
+    value: ${{ steps.inject.outputs.cache-hit }}
+
+runs:
+  using: composite
+
+  steps:
+    - name: Create directories
+      shell: bash
+      run: mkdir -p scratch
+
+    - name: Prepare timestamp for layer cache busting
+      shell: bash
+      run: date --iso=ns | tee scratch/buildstamp
+
+    - name: Prepare inputs for Dancefile
+      uses: actions/github-script@v6
+      id: dancefile-inputs
+      with:
+        script: |
+          const mounts = `${{ inputs.cache-mounts }}`
+            .split(/[\r\n]+/)
+            .map((mount) => mount.trim())
+            .filter((mount) => mount.length > 0)
+            .map((mount) => ((mount.match(/,/g) || []).length == 1 ? mount.split(",") : [mount, mount]));
+
+          const cacheMountArgs = mounts
+            .map(
+              ([mountId, mountPath]) =>
+                `--mount=type=cache,sharing=shared,id=${mountId},target=/cache-mounts/${mountPath}`,
+            )
+            .join(" ");
+
+          const paths = mounts.map(([_, mountPath]) => `/cache-mounts/${mountPath}`);
+          const key = "${{ inputs.key }}";
+          const restoreKeys = `${{ inputs.restore-keys }}`
+            .split(/[\r\n]+/)
+            .map((key) => key.trim())
+            .filter((key) => key.length > 0);
+
+          core.setOutput("cache-mount-args", cacheMountArgs);
+          core.setOutput("paths", paths);
+          core.setOutput("cache-key", key);
+          core.setOutput("restore-keys", restoreKeys);
+
+          core.exportVariable("ACTIONS_CACHE_URL", process.env.ACTIONS_CACHE_URL || "");
+          core.exportVariable("ACTIONS_RUNTIME_TOKEN", process.env.ACTIONS_RUNTIME_TOKEN || "");
+
+    - name: Inject data into Build(x|Kit) context
+      id: inject
+      shell: bash
+      run: |
+        docker buildx build scratch \
+            --build-arg GITHUB_TOKEN='${{ inputs.github-token }}' \
+            --build-arg ACTIONS_CACHE_URL='${{ env.ACTIONS_CACHE_URL }}' \
+            --build-arg ACTIONS_RUNTIME_TOKEN='${{ env.ACTIONS_RUNTIME_TOKEN }}' \
+            --file - <<EOF
+        # syntax=docker/dockerfile:1.5
+
+        FROM node:16-bookworm-slim
+
+        ARG GITHUB_TOKEN
+        ARG ACTIONS_CACHE_URL
+        ARG ACTIONS_RUNTIME_TOKEN
+
+        WORKDIR /app
+        COPY buildstamp buildstamp
+
+        RUN <<EOT
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        apt-get -q update
+        apt-get -qy --no-install-recommends install zstd
+        npm install @actions/core @actions/cache
+        EOT
+
+        RUN ${{ steps.dancefile-inputs.outputs.cache-mount-args }} node <<EOT
+        (async () => {
+          const core = require("@actions/core");
+          const cache = require("@actions/cache");
+
+          const paths = ${{ steps.dancefile-inputs.outputs.paths }};
+          const key = "${{ steps.dancefile-inputs.outputs.cache-key }}";
+          const restoreKeys = ${{ steps.dancefile-inputs.outputs.restore-keys }};
+
+          try {
+            core.saveState("CACHE_KEY", key);
+
+            const cacheKey = await cache.restoreCache(paths, key, restoreKeys);
+
+            if (!cacheKey) {
+              core.info(`Cache not found for input keys: ${[primaryKey, ...restoreKeys].join(", ")}`);
+              return;
+            }
+
+            core.saveState("CACHE_RESULT", cacheKey);
+            core.setOutput("cache-hit", key === cacheKey);
+
+            core.info(`Cache restored from key: ${cacheKey}`);
+          } catch (err) {
+            core.info(`[warning] Failed to restore cache: ${err}`)
+          }
+        })();
+        EOT
+        EOF
+
+    - name: Clean directories
+      shell: bash
+      run: sudo rm -rf scratch
