@@ -1,0 +1,19 @@
+---
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /extract
+    schedule:
+      interval: monthly
+    labels:
+      - dependabot
+      - actions
+
+  - package-ecosystem: github-actions
+    directory: /inject
+    schedule:
+      interval: monthly
+    labels:
+      - dependabot
+      - actions
