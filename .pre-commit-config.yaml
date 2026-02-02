@@ -6,7 +6,7 @@ repos:
       - id: check-useless-excludes
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: cef0300fd0fc4d2a87a85fa2093c6b283ea36f4b  # frozen: v5.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-merge-conflict
@@ -17,7 +17,7 @@ repos:
         exclude: \.gitignore
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 54da05914997e6b04e4db33ed6757d744984c68b  # frozen: 0.33.2
+    rev: ba8f7ac0e0c0d25bae15b628b634316e7d201db5  # frozen: 0.36.1
     hooks:
       - id: check-github-actions
         files: action.ya?ml$
@@ -30,7 +30,7 @@ repos:
           - yaml
 
   - repo: https://github.com/lyz-code/yamlfix
-    rev: 8072181c0f2eab9f2dd8db2eb3b9556d7cd0bd74  # frozen: 1.17.0
+    rev: f857ca370af3db7e5e181373d45c06a148fac3f8  # frozen: 1.19.1
     hooks:
       - id: yamlfix
         args:
@@ -38,14 +38,14 @@ repos:
           - .yamlfix.toml
 
   - repo: https://github.com/adrienverge/yamllint
-    rev: 79a6b2b1392eaf49cdd32ac4f14be1a809bbd8f7  # frozen: v1.37.1
+    rev: cba56bcde1fdd01c1deb3f945e69764c291a6530  # frozen: v1.38.0
     hooks:
       - id: yamllint
         args:
           - --strict
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: 192ad822316c3a22fb3d3cc8aa6eafa0b8488360  # frozen: v0.45.0
+    rev: 76b3d32d3f4b965e1d6425253c59407420ae2c43  # frozen: v0.47.0
     hooks:
       - id: markdownlint-fix
 
@@ -53,8 +53,3 @@ repos:
     rev: 7d94620933e79b8acaa0cd9e60e9864b07673d86  # frozen: v0.1.11
     hooks:
       - id: ripsecrets
-
-  - repo: https://github.com/crate-ci/typos
-    rev: 3d97dc5b9833a60a62e70d5b56af2cc7ddd522f6  # frozen: v1
-    hooks:
-      - id: typos
